@@ -229,7 +229,7 @@ public class RenderPIDS<T extends BlockEntityMapper> extends BlockEntityRenderer
 					if (destinationWidth > totalScaledWidth) {
 						matrices.scale(totalScaledWidth / destinationWidth, 1, 1);
 					}
-					textRenderer.draw(matrices, text4, 0, 0, textColor);
+					textRenderer.drawInBatch(text4, 0, 0, textColor, false, matrices.last().pose(), vertexConsumers, Font.DisplayMode.NORMAL, 0, MAX_LIGHT_GLOWING);
 				} else {
 					final Component arrivalText;
 					final int seconds = (int) ((currentSchedule.arrivalMillis - System.currentTimeMillis()) / 1000);
@@ -244,7 +244,7 @@ public class RenderPIDS<T extends BlockEntityMapper> extends BlockEntityRenderer
 
 					if (renderArrivalNumber) {
 						final FormattedCharSequence text1 = Text.literal(String.valueOf(i + 1)).setStyle(style).getVisualOrderText();
-						textRenderer.draw(matrices, text1, 0, 0, seconds > 0 ? textColor : firstTrainColor);
+						textRenderer.drawInBatch(text1, 0, 0, seconds > 0 ? textColor : firstTrainColor, false, matrices.last().pose(), vertexConsumers, Font.DisplayMode.NORMAL, 0, MAX_LIGHT_GLOWING);
 					}
 
 					final float newDestinationMaxWidth = destinationMaxWidth - carLengthMaxWidth;
@@ -258,7 +258,8 @@ public class RenderPIDS<T extends BlockEntityMapper> extends BlockEntityRenderer
 						if (carTextWidth > carLengthMaxWidth) {
 							matrices.scale(carLengthMaxWidth / carTextWidth, 1, 1);
 						}
-						textRenderer.draw(matrices, text3, 0, 0, CAR_TEXT_COLOR);
+
+						textRenderer.drawInBatch(text3, 0, 0, CAR_TEXT_COLOR, false, matrices.last().pose(), vertexConsumers, Font.DisplayMode.NORMAL, 0, MAX_LIGHT_GLOWING);
 						matrices.popPose();
 					}
 
@@ -282,7 +283,7 @@ public class RenderPIDS<T extends BlockEntityMapper> extends BlockEntityRenderer
 						matrices.scale(newDestinationMaxWidth / destinationWidth, 1, 1);
 					}
 
-					textRenderer.draw(matrices, text4, 0, 0, seconds > 0 ? textColor : firstTrainColor);
+					textRenderer.drawInBatch(text4, 0, 0, seconds > 0 ? textColor : firstTrainColor, false, matrices.last().pose(), vertexConsumers, Font.DisplayMode.NORMAL, 0, MAX_LIGHT_GLOWING);
 					matrices.popPose();
 
 					if (arrivalText != null) {
@@ -297,7 +298,8 @@ public class RenderPIDS<T extends BlockEntityMapper> extends BlockEntityRenderer
 						} else {
 							matrices.translate(totalScaledWidth - arrivalWidth, 0, 0);
 						}
-						textRenderer.draw(matrices, text5, 0, 0, textColor);
+
+						textRenderer.drawInBatch(text5, 0, 0, textColor, false, matrices.last().pose(), vertexConsumers, Font.DisplayMode.NORMAL, 0, MAX_LIGHT_GLOWING);
 						matrices.popPose();
 					}
 				}

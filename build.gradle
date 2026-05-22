@@ -3,12 +3,12 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
 	id "architectury-plugin" version "3.4-SNAPSHOT"
-	id "dev.architectury.loom" version "0.12.0-SNAPSHOT" apply false
-	id "de.undercouch.download" version "4.1.2"
-	id "com.github.johnrengelman.shadow" version "7.1.0"
+	id "dev.architectury.loom" version "1.13-SNAPSHOT" apply false
+	id "de.undercouch.download" version "5.7.0"
+	id "com.gradleup.shadow" version "9.4.1"
 }
 
-def default_minecraft_version = "1.19.2"
+def default_minecraft_version = "1.20.1"
 def minecraft_version = project.properties.containsKey("buildVersion") ? project.getProperties().get("buildVersion") : default_minecraft_version
 def minecraft_main_version = minecraft_version.split("\\.")[1] as int
 def is_1_19_3 = minecraft_version == "1.19.3" || minecraft_version == "1.19.4"
@@ -44,21 +44,23 @@ subprojects {
 }
 
 task setupLibrary() {
+	String baseURL = "https://storage.zbx1425.cn/mtr-artifacts/libs/"
+
 	doLast {
-		download {
-			src "https://www.minecrafttransitrailway.com/libs/${rootProject.mtr_version}/MTR-common-${minecraft_version}-${rootProject.mtr_version}-dev.jar"
+		download.run {
+			src "${baseURL}${rootProject.mtr_version}/MTR-common-${minecraft_version}-${rootProject.mtr_version}-dev.jar"
 			dest "checkouts/mtr-common.jar"
 			overwrite true
 		}
 
-		download {
-			src "https://www.minecrafttransitrailway.com/libs/${rootProject.mtr_version}/MTR-fabric-${minecraft_version}-${rootProject.mtr_version}-dev-shadow.jar"
+		download.run {
+			src "${baseURL}${rootProject.mtr_version}/MTR-fabric-${minecraft_version}-${rootProject.mtr_version}-dev-shadow.jar"
 			dest "checkouts/mtr-fabric.jar"
 			overwrite true
 		}
 
-		download {
-			src "https://www.minecrafttransitrailway.com/libs/${rootProject.mtr_version}/MTR-forge-${minecraft_version}-${rootProject.mtr_version}-dev-shadow.jar"
+		download.run {
+			src "${baseURL}${rootProject.mtr_version}/MTR-forge-${minecraft_version}-${rootProject.mtr_version}-dev-shadow.jar"
 			dest "checkouts/mtr-forge.jar"
 			overwrite true
 		}
@@ -72,8 +74,10 @@ task setupFiles() {
 	System.out.println("Mod Menu: " + rootProject.mod_menu_version)
 	System.out.println("Architectury: " + rootProject.architectury_version)
 
-	download {
-		src "https://github.com/jonafanho/Minecraft-Mappings/archive/refs/heads/${is_1_19_3 ? minecraft_version : "1." + minecraft_main_version}.zip"
+	String minecraftMappingsBaseURL = "https://github.com/zbx1425/Minecraft-Mappings/archive/refs/heads/";
+
+	download.run {
+		src "${minecraftMappingsBaseURL}${is_1_19_3 ? minecraft_version : "1." + minecraft_main_version}.zip"
 		dest "common/src/main/java/net/londonunderground/mappings/files.zip"
 		overwrite true
 	}
@@ -140,13 +144,13 @@ allprojects {
 		}
 	}
 
-	afterEvaluate {
-		for (def task in it.tasks) {
-			if (task != rootProject.tasks.setupFiles) {
-				task.dependsOn rootProject.tasks.setupFiles
-			}
-		}
-	}
+//	afterEvaluate {
+//		for (def task in it.tasks) {
+//			if (task != rootProject.tasks.setupFiles) {
+//				task.dependsOn rootProject.tasks.setupFiles
+//			}
+//		}
+//	}
 }
 
 
